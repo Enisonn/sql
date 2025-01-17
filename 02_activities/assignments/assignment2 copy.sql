@@ -1,16 +1,3 @@
-SELECT 
-product_name || ', ' || product_size|| ' (' || product_qty_type || ')'
-FROM product;
-
-SELECT 
-    product_name
-    || ', ' 
-    || COALESCE(product_size, '') 
-    || ' (' 
-    || COALESCE(product_qty_type, 'unit') 
-    || ')' AS product_details
-FROM product;
-
 
 --Windowed Functions
 /* 1. Write a query that selects from the customer_purchases table and numbers each customer’s  
@@ -37,9 +24,7 @@ FROM (
 ) AS unique_visits
 ORDER BY customer_id, market_date;
 
---/* 2. Reverse the numbering of the query from a part so each customer’s most recent visit is labeled 1, 
-then write another query that uses this one as a subquery (or temp table) and filters the results to 
-only the customer’s most recent visit. */
+--/* 2. Reverse the numbering of the query from a part so each customer’s most recent visit is labeled 1, then write another query that uses this one as a subquery (or temp table) and filters the results to only the customer’s most recent visit. */
 ---WINDOW functions part two
 
 SELECT
@@ -92,7 +77,19 @@ SELECT
 FROM product;
 
 /* 2. Filter the query to show any product_size value that contain a number with REGEXP. */
-
+SELECT
+    product_name,
+    CASE 
+        WHEN INSTR(product_name, '-') > 0 THEN 
+            TRIM(SUBSTR(
+                product_name, 
+                INSTR(product_name, '-') + 1
+            ))
+        ELSE 
+            NULL
+    END AS product_description
+FROM product
+WHERE product_size REGEXP '[0-9]';
 
 --Unions 
 /* 1. Using a UNION, write a query that displays the market dates with the highest and lowest total sales.
